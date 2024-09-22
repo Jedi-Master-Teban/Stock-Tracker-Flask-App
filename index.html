@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Tracker</title>
+</head>
+<body>
+    <h1>Stock Tracker</h1>
+    <form action="/add_transaction" method="post">
+        Date: <input type="date" name="date"><br>
+        Type: <select name="type">
+            <option value="buy">Buy</option>
+            <option value="sell">Sell</option>
+        </select><br>
+        Symbol: <input type="text" name="symbol"><br>
+        Quantity: <input type="number" name="quantity"><br>
+        Price: <input type="number" step="0.01" name="price"><br>
+        Cash: <input type="number" step="0.01" name="cash"><br>
+        <input type="submit" value="Add Transaction">
+    </form>
+    <h2>Transactions</h2>
+    {{ transactions|safe }}
+</body>
+</html>
