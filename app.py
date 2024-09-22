@@ -1,10 +1,11 @@
 # app.py
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, flash
 import pandas as pd
 import yfinance as yf
 import os
 
 app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # Needed for flashing messages
 
 # Path to the CSV file
 CSV_FILE_PATH = 'transactions.csv'
@@ -24,18 +25,22 @@ def get_stock_price(symbol):
 def calculate_portfolio_value():
     global transactions
     portfolio_value = 0
+    cash_balance = 0
     for index, row in transactions.iterrows():
         if row['Type'] == 'buy':
             current_price = get_stock_price(row['Symbol'])
             portfolio_value += current_price * row['Quantity']
-    return portfolio_value
+        elif row['Type'] == 'deposit':
+            cash_balance += row['Cash']
+    return round(portfolio_value + cash_balance, 3)
 
 # Function to get current prices of all assets
 def get_current_prices():
     global transactions
     current_prices = {}
     for symbol in transactions['Symbol'].unique():
-        current_prices[symbol] = get_stock_price(symbol)
+        if pd.notna(symbol):  # Skip NaN values for deposits
+            current_prices[symbol.upper()] = round(get_stock_price(symbol), 3)
     return current_prices
 
 # Route for the home page
@@ -51,10 +56,15 @@ def add_transaction():
     global transactions
     date = request.form['date']
     type_ = request.form['type']
-    symbol = request.form['symbol']
-    quantity = float(request.form['quantity'])
-    price = float(request.form['price'])
-    cash = float(request.form['cash'])
+    symbol = request.form['symbol'].upper() if type_ != 'deposit' else None
+    quantity = float(request.form['quantity']) if type_ != 'deposit' else None
+    price = float(request.form['price']) if type_ != 'deposit' else None
+    cash = float(request.form['cash']) if type_ == 'deposit' else 0
+    
+    # Server-side validation for cash amount
+    if type_ == 'deposit' and cash <= 0:
+        flash("Cash amount must be a positive number.")
+        return redirect(url_for('home'))
     
     new_transaction = pd.DataFrame([[date, type_, symbol, quantity, price, cash]], 
                                    columns=['Date', 'Type', 'Symbol', 'Quantity', 'Price', 'Cash'])
