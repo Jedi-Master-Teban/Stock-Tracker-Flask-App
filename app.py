@@ -15,10 +15,35 @@ if os.path.exists(CSV_FILE_PATH):
 else:
     transactions = pd.DataFrame(columns=['Date', 'Type', 'Symbol', 'Quantity', 'Price', 'Cash'])
 
+# Function to get current stock price
+def get_stock_price(symbol):
+    stock = yf.Ticker(symbol)
+    return stock.history(period='1d')['Close'][0]
+
+# Function to calculate portfolio value
+def calculate_portfolio_value():
+    global transactions
+    portfolio_value = 0
+    for index, row in transactions.iterrows():
+        if row['Type'] == 'buy':
+            current_price = get_stock_price(row['Symbol'])
+            portfolio_value += current_price * row['Quantity']
+    return portfolio_value
+
+# Function to get current prices of all assets
+def get_current_prices():
+    global transactions
+    current_prices = {}
+    for symbol in transactions['Symbol'].unique():
+        current_prices[symbol] = get_stock_price(symbol)
+    return current_prices
+
 # Route for the home page
 @app.route('/')
 def home():
-    return render_template('index.html', transactions=transactions.to_html())
+    portfolio_value = calculate_portfolio_value()
+    current_prices = get_current_prices()
+    return render_template('index.html', transactions=transactions.to_html(), portfolio_value=portfolio_value, current_prices=current_prices)
 
 # Route to add a transaction
 @app.route('/add_transaction', methods=['POST'])
@@ -39,27 +64,6 @@ def add_transaction():
     transactions.to_csv(CSV_FILE_PATH, index=False)
     
     return redirect(url_for('home'))
-
-# Function to get current stock price
-def get_stock_price(symbol):
-    stock = yf.Ticker(symbol)
-    return stock.history(period='1d')['Close'][0]
-
-# Function to calculate P/L and P/L%
-def calculate_pl():
-    global transactions
-    pl = 0
-    for index, row in transactions.iterrows():
-        if row['Type'] == 'buy':
-            current_price = get_stock_price(row['Symbol'])
-            pl += (current_price - row['Price']) * row['Quantity']
-    return pl
-
-# Route for the dashboard
-@app.route('/dashboard')
-def dashboard():
-    pl = calculate_pl()
-    return render_template('dashboard.html', pl=pl, transactions=transactions.to_html())
 
 if __name__ == '__main__':
     app.run(debug=True)
