@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, request, render_template, redirect, url_for, flash
 import pandas as pd
 import yfinance as yf
@@ -34,21 +33,29 @@ def calculate_portfolio_value():
             cash_balance += row['Cash']
     return round(portfolio_value + cash_balance, 3)
 
-# Function to get current prices of all assets
-def get_current_prices():
+# Function to get current prices and P/L of all assets
+def get_current_prices_and_pl():
     global transactions
     current_prices = {}
+    pl_values = {}
     for symbol in transactions['Symbol'].unique():
         if pd.notna(symbol):  # Skip NaN values for deposits
-            current_prices[symbol.upper()] = round(get_stock_price(symbol), 3)
-    return current_prices
+            symbol = symbol.upper()
+            current_price = round(get_stock_price(symbol), 3)
+            total_quantity = transactions[transactions['Symbol'] == symbol]['Quantity'].sum()
+            total_cost = (transactions[transactions['Symbol'] == symbol]['Quantity'] * transactions[transactions['Symbol'] == symbol]['Price']).sum()
+            pl = round((current_price * total_quantity) - total_cost, 3)
+            pl_percent = round((pl / total_cost) * 100, 3) if total_cost != 0 else 0
+            current_prices[symbol] = current_price
+            pl_values[symbol] = (pl, pl_percent)
+    return current_prices, pl_values
 
 # Route for the home page
 @app.route('/')
 def home():
     portfolio_value = calculate_portfolio_value()
-    current_prices = get_current_prices()
-    return render_template('index.html', transactions=transactions.to_html(), portfolio_value=portfolio_value, current_prices=current_prices)
+    current_prices, pl_values = get_current_prices_and_pl()
+    return render_template('index.html', transactions=transactions, portfolio_value=portfolio_value, current_prices=current_prices, pl_values=pl_values)
 
 # Route to add a transaction
 @app.route('/add_transaction', methods=['POST'])
