@@ -2,11 +2,18 @@
 from flask import Flask, request, render_template, redirect, url_for
 import pandas as pd
 import yfinance as yf
+import os
 
 app = Flask(__name__)
 
+# Path to the CSV file
+CSV_FILE_PATH = 'transactions.csv'
+
 # Initialize DataFrame to store transactions
-transactions = pd.DataFrame(columns=['Date', 'Type', 'Symbol', 'Quantity', 'Price', 'Cash'])
+if os.path.exists(CSV_FILE_PATH):
+    transactions = pd.read_csv(CSV_FILE_PATH)
+else:
+    transactions = pd.DataFrame(columns=['Date', 'Type', 'Symbol', 'Quantity', 'Price', 'Cash'])
 
 # Route for the home page
 @app.route('/')
@@ -27,6 +34,10 @@ def add_transaction():
     new_transaction = pd.DataFrame([[date, type_, symbol, quantity, price, cash]], 
                                    columns=['Date', 'Type', 'Symbol', 'Quantity', 'Price', 'Cash'])
     transactions = pd.concat([transactions, new_transaction], ignore_index=True)
+    
+    # Save the updated DataFrame to the CSV file
+    transactions.to_csv(CSV_FILE_PATH, index=False)
+    
     return redirect(url_for('home'))
 
 # Function to get current stock price
