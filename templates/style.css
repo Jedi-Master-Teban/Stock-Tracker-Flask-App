@@ -1,0 +1,55 @@
+/* styles.css */
+
+/* General styling for the card */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Styling for the card header */
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Styling for the card body */
+.card-body {
+    padding: 15px;
+}
+
+/* Styling for the table container */
+.table-container {
+    overflow-x: auto;
+}
+
+/* Styling for the table */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+/* Styling for table headers */
+.table th {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Styling for table rows */
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+/* Styling for striped rows */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
