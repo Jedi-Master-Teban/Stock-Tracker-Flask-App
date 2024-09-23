@@ -65,7 +65,6 @@ def home():
     current_prices, pl_values = get_current_prices_and_pl()
     return render_template('index.html', transactions=transactions, portfolio_value=portfolio_value, current_prices=current_prices, pl_values=pl_values)
 
-# Route for the transactions page
 @app.route('/transactions')
 def transactions_page():
     return render_template('transactions.html', transactions=transactions)

@@ -188,39 +188,6 @@
                 </ul>
             </div>
         </div>
-        <div class="card mt-4">
-            <div class="card-header">
-                Transactions
-            </div>
-            <div class="card-body table-container">
-                <button class="btn btn-light mb-3" onclick="toggleFilterInput()">Filter</button>
-                <input type="text" id="symbolFilter" class="form-control mb-3" placeholder="Filter by Symbol">
-                <table class="table table-striped" id="transactionsTable">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Symbol</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for index, row in transactions.iterrows() %}
-                            <tr>
-                                <td>{{ row['Date'] }}</td>
-                                <td>{{ row['Type'] }}</td>
-                                <td>{{ row['Symbol']|upper }}</td>
-                                <td>{{ row['Quantity'] }}</td>
-                                <td>{{ row['Price'] }}</td>
-                                <td>{{ '%.2f' % (row['Quantity'] * row['Price']) if row['Quantity'] and row['Price'] else 'N/A' }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </body>
 </html>
