@@ -33,6 +33,14 @@ def calculate_portfolio_value():
             cash_balance += row['Cash']
     return round(portfolio_value + cash_balance, 3)
 
+def calculate_portfolio_composition():
+    composition = transactions.groupby('Symbol').agg({
+        'Quantity': 'sum',
+        'Price': 'mean'
+    }).reset_index()
+    composition['Total Value'] = composition['Quantity'] * composition['Price']
+    return composition
+
 # Function to get current prices and P/L of all assets
 def get_current_prices_and_pl():
     global transactions
@@ -81,6 +89,12 @@ def add_transaction():
     transactions.to_csv(CSV_FILE_PATH, index=False)
     
     return redirect(url_for('home'))
+
+@app.route('/portfolio_composition')
+def portfolio_composition():
+    composition = calculate_portfolio_composition()
+    return render_template('portfolio_composition.html', composition=composition)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

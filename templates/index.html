@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Stock Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owl's Wealth Management</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             background-color: #00BFFF;
@@ -36,13 +37,13 @@
             top: 10px;
             right: 10px;
             background-color: #f8f9fa;
-            padding: 5px; /* Reduced padding */
+            padding: 5px;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             color: black;
             margin-bottom: 50px;
-            font-size: 0.9em; /* Reduced font size */
+            font-size: 0.9em;
         }
     </style>
     <script>
@@ -111,6 +112,22 @@
     </script>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Owl's Wealth Management</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/portfolio_composition">Portfolio Composition</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <div class="billboard">
         <h3>Portfolio Value: ${{ '%.3f' % portfolio_value }}</h3>
     </div>
