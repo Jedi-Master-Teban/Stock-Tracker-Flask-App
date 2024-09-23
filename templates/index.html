@@ -28,6 +28,9 @@
         .table {
             background-color: white;
         }
+        #symbolFilter {
+            display: none;
+        }
     </style>
     <script>
         function toggleFields() {
@@ -61,6 +64,37 @@
             }
             return true;
         }
+
+        function filterTable() {
+            var input = document.getElementById("symbolFilter").value.toUpperCase();
+            var table = document.getElementById("transactionsTable");
+            var tr = table.getElementsByTagName("tr");
+
+            for (var i = 1; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[2]; // Assuming the symbol is in the third column
+                if (td) {
+                    var txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(input) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function toggleFilterInput() {
+            var filterInput = document.getElementById("symbolFilter");
+            if (filterInput.style.display === "none") {
+                filterInput.style.display = "block";
+            } else {
+                filterInput.style.display = "none";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("symbolFilter").addEventListener("input", filterTable);
+        });
     </script>
 </head>
 <body>
@@ -131,7 +165,9 @@
                 Transactions
             </div>
             <div class="card-body table-container">
-                <table class="table table-striped">
+                <button class="btn btn-light mb-3" onclick="toggleFilterInput()">Filter</button>
+                <input type="text" id="symbolFilter" class="form-control mb-3" placeholder="Filter by Symbol">
+                <table class="table table-striped" id="transactionsTable">
                     <thead>
                         <tr>
                             <th>Date</th>
