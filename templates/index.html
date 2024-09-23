@@ -47,38 +47,6 @@
         }
     </style>
     <script>
-        function toggleFields() {
-            var type = document.getElementById("type").value;
-            var cashField = document.getElementById("cashField");
-            var symbolField = document.getElementById("symbolField");
-            var quantityField = document.getElementById("quantityField");
-            var priceField = document.getElementById("priceField");
-
-            if (type === "deposit") {
-                cashField.style.display = "block";
-                symbolField.style.display = "none";
-                quantityField.style.display = "none";
-                priceField.style.display = "none";
-            } else {
-                cashField.style.display = "none";
-                symbolField.style.display = "block";
-                quantityField.style.display = "block";
-                priceField.style.display = "block";
-            }
-        }
-
-        function validateForm() {
-            var type = document.getElementById("type").value;
-            if (type === "deposit") {
-                var cash = document.getElementById("cash").value;
-                if (cash <= 0) {
-                    alert("Cash amount must be a positive number.");
-                    return false;
-                }
-            }
-            return true;
-        }
-
         function filterTable() {
             var input = document.getElementById("symbolFilter").value.toUpperCase();
             var table = document.getElementById("transactionsTable");
@@ -119,14 +87,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/' %}active{% endif %}">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/portfolio_composition' %}active{% endif %}">
                     <a class="nav-link" href="/portfolio_composition">Portfolio Composition</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {% if request.path == '/transactions' %}active{% endif %}">
                     <a class="nav-link" href="/transactions">Transactions</a>
+                </li>
+                <li class="nav-item {% if request.path == '/add_transaction_page' %}active{% endif %}">
+                    <a class="nav-link" href="/add_transaction_page">Add Transaction</a>
                 </li>
             </ul>
         </div>
@@ -136,46 +107,6 @@
     </div>
     <div class="container">
         <h1 class="text-center">Owl's Wealth Management</h1>
-        <div class="card">
-            <div class="card-header">
-                Add Transaction
-            </div>
-            <div class="card-body">
-                <form action="/add_transaction" method="post" onsubmit="return validateForm()">
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" class="form-control" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Type</label>
-                        <select class="form-control" name="type" id="type" onchange="toggleFields()" required>
-                            <option value="buy">Buy</option>
-                            <option value="sell">Sell</option>
-                            <option value="deposit">Deposit</option>
-                            <option value="dividends">Dividends</option>
-                            <option value="tax-dividends">Tax-Dividends</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="symbolField">
-                        <label for="symbol">Symbol</label>
-                        <input type="text" class="form-control" name="symbol">
-                    </div>
-                    <div class="form-group" id="quantityField">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" class="form-control" name="quantity">
-                    </div>
-                    <div class="form-group" id="priceField">
-                        <label for="price">Price</label>
-                        <input type="number" step="0.01" class="form-control" name="price">
-                    </div>
-                    <div class="form-group" id="cashField" style="display: none;">
-                        <label for="cash">Cash</label>
-                        <input type="number" step="0.01" class="form-control" name="cash" id="cash" min="0.01">
-                    </div>
-                    <button type="submit" class="btn btn-light">Add Transaction</button>
-                </form>
-            </div>
-        </div>
         <div class="card mt-4">
             <div class="card-header">
                 Current Prices
